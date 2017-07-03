@@ -1,5 +1,8 @@
 "use strict";
 
+let moment = window.moment;
+let $ = window.$;
+
 /** {Array<EventRecord>} 用來放 EventRecord，最後所有日曆事件資料都在此陣列內 */
 let eventRecords = [];
 
@@ -76,12 +79,19 @@ function parse(input) {
  * @param  {Array<string>} arr [暫存之欄位陣列]
  */
 function handleEventRecord(arr) {
+  console.log(arr);
   /** 若某日曆事件是「全天」事件，則其時間格式與「幾點到幾點」不一樣，需要再往後多切一點 */
   if (arr[1].match('^VALUE')) {
     arr[1] = arr[1].substring(11);
+    arr[1] = moment(arr[1], "YYYYMMDD").format("YYYY/MM/DD HH:mm:ss");
+  } else {
+    arr[1] = moment(arr[1], "YYYYMMDDTHHmmssZ").format("YYYY/MM/DD HH:mm:ss");
   }
   if (arr[2].match('^VALUE')) {
     arr[2] = arr[2].substring(11);
+    arr[2] = moment(arr[2], "YYYYMMDD").format("YYYY/MM/DD HH:mm:ss");
+  } else {
+    arr[2] = moment(arr[2], "YYYYMMDDTHHmmssZ").format("YYYY/MM/DD HH:mm:ss");
   }
   eventRecords.push(new EventRecord(arr[1], arr[2], arr[4], arr[3]));
 }
